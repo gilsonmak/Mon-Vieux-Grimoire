@@ -2,9 +2,12 @@ const express = require('express');
 
 const app = express();
 
+app.use(express.json());
+
+
 app.use((req, res) => {
-    res.json({message: 'votre requête a bien été reçue' });
-});
+    res.json({ message: 'Ceci est un test !' }); 
+ });
 
 
 
