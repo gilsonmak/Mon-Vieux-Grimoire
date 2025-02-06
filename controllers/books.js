@@ -14,7 +14,7 @@ exports.getOneBooks = (req, res, next) => {
 };
 
 exports.createBook = (req, res, next) => {
-    const bookObject = JSON.parse(req.body.thing);
+    const bookObject = JSON.parse(req.body.book);
     delete bookObject._id;
     delete bookObject._userId;
     const book = new Book({
