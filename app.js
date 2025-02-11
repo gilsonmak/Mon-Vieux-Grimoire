@@ -9,7 +9,7 @@ const app = express();
 
 app.use(express.json());
 require('dotenv').config();
-console.log(process.env.MONGODB)
+
 
 
 mongoose.connect(process.env.MONGODB,
@@ -17,7 +17,7 @@ mongoose.connect(process.env.MONGODB,
       useUnifiedTopology: true })
     .then(() => console.log('Connexion à MongoDB réussie !'))
     .catch(() => console.log('Connexion à MongoDB échouée !'));
-  
+
 
 
 app.use((req, res, next) => {

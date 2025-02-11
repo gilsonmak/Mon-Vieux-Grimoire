@@ -59,7 +59,7 @@ exports.createBook = (req, res, next) => {
                 const filename = book.imageUrl.split('/images/')[1];
                 fs.unlink(`images/${filename}`, () => {
                     Book.deleteOne({_id: req.params.id})
-                        .then(() => { res.status(200).json({message: 'Livre supprimé !'})})
+                        .then(() => { res.status(200).json({ message: 'Livre supprimé !'})})
                         .catch(error => res.status(401).json({ error }));
                 });
             }
@@ -67,5 +67,35 @@ exports.createBook = (req, res, next) => {
         .catch( error => {
             res.status(500).json({ error });
         });
+ };
+
+ exports.rateBook = (req, res, next) => {
+    const userId = req.auth._userId;
+    const { rating } = req.body;
+
+    if (rating < 0 || rating > 5) {
+       return res.status(400).json({ message: 'La note doit être comprise entre 0 et 5 '});
+    }
+
+    Book.findOne ({ _id: req.params.id})
+    .then(book => {
+        if (!book) {
+           return res.status(404).json({ message: 'Livre non trouvé !'});
+        }
+        const userRating = book.ratings.find(rating => rating.userId === userId);
+        if (userRating) {
+            return res.status(403).json({ message: 'Vous avez déjà noté ce livre '});
+        }
+
+        book.ratings.push({ userId: userId, grade: rating })
+
+        book.averageRating = book.ratings.reduce((accumulateur, rating) => accumulateur + rating.grade, 0) / book.ratings.length;
+
+        book.save()
+             .then((updateBook) => res.status(200).json(updateBook))
+             .catch(error => res.status(400).json({ error }));
+
+    } )
+    .catch(error => res.status(400).json({ error }));
  };
  
