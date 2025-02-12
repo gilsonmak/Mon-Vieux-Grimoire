@@ -40,6 +40,11 @@ exports.createBook = (req, res, next) => {
             if (book.userId != req.auth.userId) {
                 res.status(401).json({ message : 'Not authorized'});
             } else {
+                const filename = book.imageUrl.split("/images/")[1];
+                req.file &&
+                  fs.unlink(`images/${filename}`, (err) => {
+                    if (err) console.log('Erreur lors de la suppression de l\'image:',err);
+                  });
                 Book.updateOne({ _id: req.params.id}, { ...bookObject, _id: req.params.id})
                 .then(() => res.status(200).json({message : 'Livre modifié!'}))
                 .catch(error => res.status(401).json({ error }));
@@ -96,6 +101,12 @@ exports.createBook = (req, res, next) => {
              .catch(error => res.status(400).json({ error }));
 
     } )
-    .catch(error => res.status(400).json({ error }));
+    .catch(error => res.status(400).json({ error: 'Une erreur est survenue ' }));
  };
+
+ exports.bestRatingBook = (req, res) => {
+    Book.find().sort({ averageRating: -1 }).limit(3)
+    .then(books => res.status(200).json(books))
+    .catch(error => res.status(400).json({ error }));
+ }
  
