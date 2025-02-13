@@ -7,7 +7,7 @@ exports.getAllBooks = (req, res, next) => {
     .catch(error => res.status(400).json({ error }));
 };
 
-exports.getOneBooks = (req, res, next) => {
+exports.getOneBook = (req, res, next) => {
     Book.findOne({_id: req.params.id})
     .then(book => res.status(200).json(book))
     .catch(error => res.status(404).json({ error }));
@@ -75,7 +75,7 @@ exports.createBook = (req, res, next) => {
  };
 
  exports.rateBook = (req, res, next) => {
-    const userId = req.auth._userId;
+    const userId = req.auth.userId;
     const { rating } = req.body;
 
     if (rating < 0 || rating > 5) {
@@ -92,7 +92,7 @@ exports.createBook = (req, res, next) => {
             return res.status(403).json({ message: 'Vous avez déjà noté ce livre '});
         }
 
-        book.ratings.push({ userId: userId, grade: rating })
+        book.ratings.push({ userId, grade: rating })
 
         book.averageRating = book.ratings.reduce((accumulateur, rating) => accumulateur + rating.grade, 0) / book.ratings.length;
 
