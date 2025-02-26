@@ -1,6 +1,6 @@
 const express = require('express'); // Importation d'Express pour gérer les routes
 const auth = require('../middleware/auth'); // Middleware d'authentification pour sécuriser certaines routes
-const multer = require('../middleware/multer-config'); // Middleware pour gérer l'upload des fichiers (images)
+const { upload, processImage } = require('../middleware/multer-config'); // Middleware pour l'upload et le traitement des images
 const router = express.Router(); // Création d'un routeur Express
 
 const bookCtrl = require('../controllers/books'); // Importation du contrôleur qui gère la logique métier des livres
@@ -15,10 +15,10 @@ router.get('/bestrating', bookCtrl.bestRatingBook);
 router.get('/:id', bookCtrl.getOneBook);
 
 // Route pour ajouter un nouveau livre (nécessite authentification et gestion de fichier avec multer)
-router.post('/', auth, multer, bookCtrl.createBook);
+router.post('/', auth, upload.single('image'), processImage, bookCtrl.createBook);
 
 // Route pour modifier un livre existant (nécessite authentification et gestion de fichier avec multer)
-router.put('/:id', auth, multer, bookCtrl.modifyBook);
+router.put('/:id', auth, upload.single('image'), processImage, bookCtrl.modifyBook);
 
 // Route pour supprimer un livre (nécessite authentification)
 router.delete('/:id', auth, bookCtrl.deleteBook);
