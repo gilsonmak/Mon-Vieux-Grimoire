@@ -17,7 +17,7 @@ mongoose.connect(process.env.MONGODB, // Utilisation de l'URL stockée dans le f
     { useNewUrlParser: true, // Utilisation du nouveau parser d'URL de Mongoose
       useUnifiedTopology: true }) // Activation du moteur de gestion des connexions de Mongoose
     .then(() => console.log('Connexion à MongoDB réussie !')) // Message en cas de succès
-    .catch(() => console.log('Connexion à MongoDB échouée !')); // Message en cas d'échec
+    .catch((error) => console.error('Connexion à MongoDB échouée !', error)); // Message en cas d'échec
 
 // Middleware pour configurer les en-têtes CORS (permettant la communication entre différents domaines)
 app.use((req, res, next) => {
